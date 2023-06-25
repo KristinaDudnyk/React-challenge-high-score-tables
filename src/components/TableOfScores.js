@@ -7,6 +7,10 @@ import { useState } from "react";
 export default function TableOfScores() {
   const sortedArrByAlfabet = allCountryScores.sort(sortByName);
 
+  function convertFirstLetterToUpperCase(word) {
+    return word[0].toUpperCase() + word.substring(1);
+  }
+
   function sortByName(a, b) {
     if (a.name < b.name) {
       return -1;
@@ -17,15 +21,20 @@ export default function TableOfScores() {
     return 0;
   }
 
-  // const [scores, setScores] = useState(allCountryScores.sort(sortByName));
-  const [scores, setScores] = useState(() => (a, b) => a.s < b.s);
-  debugger;
+  const [isDescending, setIsDescending] = useState(false);
+
   function sortFunction() {
-    debugger;
-    setScores(scores(() => (a, b) => a.s > b.s));
+    setIsDescending((prevIsDescending) => !prevIsDescending);
   }
 
-  returfirstn(
+  function compareScores(a, b) {
+    if (isDescending) {
+      return b.s - a.s;
+    }
+    return a.s - b.s;
+  }
+
+  return (
     <div>
       <Button sortFunction={sortFunction} />
       {sortedArrByAlfabet.map((element, index) => {
@@ -37,10 +46,12 @@ export default function TableOfScores() {
               </tr>
             </thead>
             <tbody>
-              {element.scores.sort(scores).map(({ n, s }, index) => {
+              {element.scores.sort(compareScores).map(({ n, s }, index) => {
                 return (
                   <tr key={index}>
-                    <td className="score-name">{n}</td>
+                    <td className="score-name">
+                      {convertFirstLetterToUpperCase(n)}
+                    </td>
                     <td className="score-score">{s}</td>
                   </tr>
                 );
